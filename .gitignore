@@ -1,0 +1,9 @@
+/debug/
+/release/
+/.qmake.stash
+/Makefile
+/Makefile.Debug
+/Makefile.Release
+/object_script.radio_net_simulatior.Debug
+/object_script.radio_net_simulatior.Release
+/radio_net_simulatior.pro.user
