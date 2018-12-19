@@ -24,7 +24,7 @@ void SimulatorRadioPath::initRadioPath()
 void SimulatorRadioPath::radioDataSend(const uint8_t *pData, const size_t length)
 {
     QSharedPointer<Message> msg (new Message(pData, length,
-                                    m_pOwner->getParams().dataTransmissionRate(), m_pOwner->getParams().txFreqIndex(), m_pOwner->getParams().id()));
+                                             m_pOwner->getParams().dataTransmissionRate(), m_pOwner->getParams().txFreqIndex(), m_pOwner->getParams().id()));
     emit sigSendMessage(msg);
 
 }

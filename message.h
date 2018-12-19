@@ -1,7 +1,6 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
-#include <QTimer>
 #include <QTime>
 #include <vector>
 
@@ -19,7 +18,6 @@ public:
     const uint8_t * data() const;
     size_t length() const;
     const uint32_t & sourceId() const;
-    QTimer * timer ();
 
 private:
     QTime m_startSendTime;
@@ -28,7 +26,6 @@ private:
     std::vector<uint8_t> m_data;
     uint32_t m_sourceId;
 
-    QTimer * m_timer {nullptr};
 };
 
 #endif // MESSAGE_H

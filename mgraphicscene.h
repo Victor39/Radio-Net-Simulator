@@ -11,8 +11,6 @@ public:
     explicit mGraphicScene(QObject *parent = nullptr);
 
 private:
-//    QGraphicsItem * m_pressedItem {nullptr};
-
     void mousePressEvent(QGraphicsSceneMouseEvent * mouseEvent) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent * mouseEvent) override;
 

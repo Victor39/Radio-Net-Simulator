@@ -37,8 +37,8 @@ bool ConnectionManager::removeRadioItem(std::shared_ptr<RadioItem> radioItem)
     RadioId itemId = radioItem->getParams().id();
 
     auto foundIter = std::find_if(m_radioItemLinkers.begin(), m_radioItemLinkers.end(),
-                            [itemId](std::pair<uint32_t, std::shared_ptr<RadioItemLinker>> const & m) {
-                                return m.first == itemId;});
+                                  [itemId](std::pair<uint32_t, std::shared_ptr<RadioItemLinker>> const & m) {
+            return m.first == itemId;});
 
     if(foundIter == m_radioItemLinkers.end()) {
         qDebug() << "Warning: item with ID " << itemId << " not found in connection manager!";

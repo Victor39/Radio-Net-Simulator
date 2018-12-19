@@ -7,7 +7,7 @@
 #include "radioitemlinker.h"
 #include "message.h"
 #include <QSharedPointer>
-#include <map>
+#include <unordered_map>
 
 
 class ConnectionManager : public QObject
@@ -27,7 +27,7 @@ public:
 private:
     ConnectionManager();
 
-    std::map<uint32_t, std::shared_ptr<RadioItemLinker>> m_radioItemLinkers;
+    std::unordered_map<uint32_t, std::shared_ptr<RadioItemLinker>> m_radioItemLinkers;
 
 signals:
 

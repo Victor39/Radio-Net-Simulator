@@ -13,7 +13,7 @@ CC            = gcc
 CXX           = g++
 DEFINES       = -DUNICODE -D_UNICODE -DWIN32 -DMINGW_HAS_SECURE_API=1 -DQT_QML_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_NEEDS_QMAIN
 CFLAGS        = -fno-keep-inline-dllexport -g -Wall -W -Wextra $(DEFINES)
-CXXFLAGS      = -fno-keep-inline-dllexport -g -Wall -W -Wextra -fexceptions -mthreads $(DEFINES)
+CXXFLAGS      = -fno-keep-inline-dllexport -g -std=gnu++11 -Wall -W -Wextra -fexceptions -mthreads $(DEFINES)
 INCPATH       = -I. -IC:\Qt\5.12.0\mingw73_64\include -IC:\Qt\5.12.0\mingw73_64\include\QtWidgets -IC:\Qt\5.12.0\mingw73_64\include\QtGui -IC:\Qt\5.12.0\mingw73_64\include\QtANGLE -IC:\Qt\5.12.0\mingw73_64\include\QtCore -Idebug -I. -I\include -IC:\Qt\5.12.0\mingw73_64\mkspecs\win32-g++ 
 LINKER      =        g++
 LFLAGS        =        -Wl,-subsystem,windows -mthreads
@@ -141,7 +141,7 @@ compiler_moc_predefs_make_all: debug/moc_predefs.h
 compiler_moc_predefs_clean:
 	-$(DEL_FILE) debug\moc_predefs.h
 debug/moc_predefs.h: C:/Qt/5.12.0/mingw73_64/mkspecs/features/data/dummy.cpp
-	g++ -fno-keep-inline-dllexport -g -Wall -W -Wextra -dM -E -o debug\moc_predefs.h C:\Qt\5.12.0\mingw73_64\mkspecs\features\data\dummy.cpp
+	g++ -fno-keep-inline-dllexport -g -std=gnu++11 -Wall -W -Wextra -dM -E -o debug\moc_predefs.h C:\Qt\5.12.0\mingw73_64\mkspecs\features\data\dummy.cpp
 
 compiler_moc_header_make_all: debug/moc_mainform.cpp debug/moc_radioitem.cpp debug/moc_mgraphicscene.cpp debug/moc_mtablemodel.cpp debug/moc_connectionmanager.cpp debug/moc_simulatorradiopath.cpp
 compiler_moc_header_clean:
@@ -657,13 +657,13 @@ debug/moc_connectionmanager.cpp: C:/Qt/5.12.0/mingw73_64/include/QtWidgets/QGrap
 		radioitem.h \
 		point2d.h \
 		radioitemlinker.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/QSharedPointer \
 		message.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/QTime \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qdatetime.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/QTimer \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qtimer.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qbasictimer.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/QTime \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qdatetime.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/QSharedPointer \
 		connectionmanager.h \
 		debug/moc_predefs.h \
 		C:/Qt/5.12.0/mingw73_64/bin/moc.exe
@@ -671,8 +671,10 @@ debug/moc_connectionmanager.cpp: C:/Qt/5.12.0/mingw73_64/include/QtWidgets/QGrap
 
 debug/moc_simulatorradiopath.cpp: halinterfaces/include/radiopath.h \
 		message.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/QTimer \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qtimer.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/QTime \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qdatetime.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qstring.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qchar.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qglobal.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qconfig-bootstrapped.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qconfig.h \
@@ -694,44 +696,39 @@ debug/moc_simulatorradiopath.cpp: halinterfaces/include/radiopath.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qmutex.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qnumeric.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qversiontagging.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qbasictimer.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qnamespace.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qobject.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qobjectdefs.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qobjectdefs_impl.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qstring.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qchar.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qbytearray.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qrefcount.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qnamespace.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qarraydata.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qstringliteral.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qstringalgorithms.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qstringview.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qstringbuilder.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qshareddata.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qhash.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qiterator.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qlist.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qalgorithms.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qiterator.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qhashfunctions.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qpair.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qbytearraylist.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qstringlist.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qregexp.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qstringmatcher.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/QDebug \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qdebug.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qmap.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qtextstream.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qiodevice.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qobject.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qobjectdefs.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qobjectdefs_impl.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qcoreevent.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qscopedpointer.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qmetatype.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qvarlengtharray.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qcontainerfwd.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qobject_impl.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/QTime \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qdatetime.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qshareddata.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qhash.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/QDebug \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qdebug.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qmap.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qtextstream.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qiodevice.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qlocale.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qvariant.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qvector.h \
@@ -1078,13 +1075,13 @@ debug/mainform.o: mainform.cpp mainform.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtWidgets/QWidget \
 		connectionmanager.h \
 		radioitemlinker.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/QSharedPointer \
 		message.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/QTime \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qdatetime.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/QTimer \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qtimer.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qbasictimer.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/QTime \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qdatetime.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/QSharedPointer \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/QDebug
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\mainform.o mainform.cpp
 
@@ -1477,13 +1474,13 @@ debug/connectionmanager.o: connectionmanager.cpp connectionmanager.h \
 		radioitem.h \
 		point2d.h \
 		radioitemlinker.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/QSharedPointer \
 		message.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/QTime \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qdatetime.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/QTimer \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qtimer.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qbasictimer.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/QTime \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qdatetime.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/QSharedPointer \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/QDebug
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\connectionmanager.o connectionmanager.cpp
 
@@ -1581,14 +1578,23 @@ debug/radioitemlinker.o: radioitemlinker.cpp C:/Qt/5.12.0/mingw73_64/include/QtC
 		C:/Qt/5.12.0/mingw73_64/include/QtGui/qimage.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtGui/qpixelformat.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtGui/qtransform.h \
-		point2d.h
+		point2d.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/QSharedPointer \
+		message.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/QTime \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qdatetime.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/QTimer \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qtimer.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qbasictimer.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\radioitemlinker.o radioitemlinker.cpp
 
 debug/simulatorradiopath.o: simulatorradiopath.cpp simulatorradiopath.h \
 		halinterfaces/include/radiopath.h \
 		message.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/QTimer \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qtimer.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/QTime \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qdatetime.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qstring.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qchar.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qglobal.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qconfig-bootstrapped.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qconfig.h \
@@ -1610,44 +1616,39 @@ debug/simulatorradiopath.o: simulatorradiopath.cpp simulatorradiopath.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qmutex.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qnumeric.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qversiontagging.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qbasictimer.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qnamespace.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qobject.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qobjectdefs.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qobjectdefs_impl.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qstring.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qchar.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qbytearray.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qrefcount.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qnamespace.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qarraydata.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qstringliteral.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qstringalgorithms.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qstringview.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qstringbuilder.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qshareddata.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qhash.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qiterator.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qlist.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qalgorithms.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qiterator.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qhashfunctions.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qpair.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qbytearraylist.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qstringlist.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qregexp.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qstringmatcher.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/QDebug \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qdebug.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qmap.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qtextstream.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qiodevice.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qobject.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qobjectdefs.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qobjectdefs_impl.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qcoreevent.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qscopedpointer.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qmetatype.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qvarlengtharray.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qcontainerfwd.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qobject_impl.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/QTime \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qdatetime.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qshareddata.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qhash.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/QDebug \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qdebug.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qmap.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qtextstream.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qiodevice.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qlocale.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qvariant.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qvector.h \
@@ -1685,12 +1686,17 @@ debug/simulatorradiopath.o: simulatorradiopath.cpp simulatorradiopath.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtGui/qtransform.h \
 		point2d.h \
 		connectionmanager.h \
-		radioitemlinker.h
+		radioitemlinker.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/QTimer \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qtimer.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qbasictimer.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\simulatorradiopath.o simulatorradiopath.cpp
 
 debug/message.o: message.cpp message.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/QTimer \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qtimer.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/QTime \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qdatetime.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qstring.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qchar.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qglobal.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qconfig-bootstrapped.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qconfig.h \
@@ -1712,39 +1718,25 @@ debug/message.o: message.cpp message.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qmutex.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qnumeric.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qversiontagging.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qbasictimer.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qnamespace.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qobject.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qobjectdefs.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qobjectdefs_impl.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qstring.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qchar.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qbytearray.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qrefcount.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qnamespace.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qarraydata.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qstringliteral.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qstringalgorithms.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qstringview.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qstringbuilder.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qshareddata.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qhash.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qiterator.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qlist.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qalgorithms.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qiterator.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qhashfunctions.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qpair.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qbytearraylist.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qstringlist.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qregexp.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qstringmatcher.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qcoreevent.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qscopedpointer.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qmetatype.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qvarlengtharray.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qcontainerfwd.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qobject_impl.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/QTime \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qdatetime.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qshareddata.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/qhash.h
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qstringmatcher.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\message.o message.cpp
 
 debug/moc_mainform.o: debug/moc_mainform.cpp 

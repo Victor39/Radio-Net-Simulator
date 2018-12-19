@@ -6,8 +6,9 @@
 #include "radioitem.h"
 #include <QSharedPointer>
 #include "message.h"
+#include <QTimer>
 
-class RadioItemLinker : public QObject
+class RadioItemLinker: public QObject
 {
 public:
     explicit RadioItemLinker(std::shared_ptr<RadioItem> radioItem);
@@ -16,15 +17,17 @@ public:
     void updateTopologyFor(const RadioId & radioItemId);
     const Point2D & getCentrePoint() const;
     RadioId getId() const;
-    void launchDistributionMessage (QSharedPointer<Message> msg);
     void launchReceivingMessage (QSharedPointer<Message> msg);
+    void launchDistributionMessage (QSharedPointer<Message> msg);
 
 private:
     std::shared_ptr<RadioItem> m_radioItem;
     std::unordered_map<RadioId, std::pair<std::shared_ptr<RadioItemLinker>, uint32_t>> m_neighbors;
 
-//public slots:
-//    void slotFinishReceivingMessage(QSharedPointer<Message> msg);
+    std::unordered_map<uint32_t, QSharedPointer<Message>> m_receivingMessages;
+
+private slots:
+    void slotTimerAlarmOfEndReceivedMessage(QSharedPointer<Message> msg);
 };
 
 #endif // RADIOITEMLINKER_H

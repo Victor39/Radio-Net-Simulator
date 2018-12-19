@@ -35,3 +35,5 @@ HEADERS  += mainform.h \
     message.h
 
 FORMS    += mainform.ui
+
+CONFIG += c++11

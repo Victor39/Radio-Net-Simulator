@@ -6,17 +6,10 @@ Message::Message(const uint8_t * pData, const size_t length, const uint32_t byte
     m_freqIndex = freqIndex;
     std::copy(&pData[0], &pData[length], back_inserter(m_data));
     m_sourceId = sourceId;
-
-    m_timer = new QTimer();
-//    connect(timer, SIGNAL(timeout()), this, SLOT(slotTimerAlarm()));
 }
 
 Message::~Message()
 {
-    if(m_timer != nullptr) {
-        m_timer->stop();
-        delete m_timer;
-    }
 }
 
 const QTime &Message::startSendTime() const
@@ -48,9 +41,3 @@ const uint32_t &Message::sourceId() const
 {
     return m_sourceId;
 }
-
-QTimer *Message::timer()
-{
-    return m_timer;
-}
-
