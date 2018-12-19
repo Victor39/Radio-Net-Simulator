@@ -19,7 +19,9 @@ SOURCES += main.cpp\
     mtablemodel.cpp \
     connectionmanager.cpp \
     point2d.cpp \
-    radioitemlinker.cpp
+    radioitemlinker.cpp \
+    simulatorradiopath.cpp \
+    message.cpp
 
 HEADERS  += mainform.h \
     radioitem.h \
@@ -27,6 +29,9 @@ HEADERS  += mainform.h \
     mtablemodel.h \
     connectionmanager.h \
     point2d.h \
-    radioitemlinker.h
+    radioitemlinker.h \
+    halinterfaces/include/radiopath.h \
+    simulatorradiopath.h \
+    message.h
 
 FORMS    += mainform.ui

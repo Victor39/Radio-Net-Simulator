@@ -5,8 +5,7 @@
 #include <QGraphicsItem>
 #include <point2d.h>
 
-
-
+using RadioId = uint32_t;
 
 enum class T_RADIO_MODE {
     RADIO_MODE_OFF,
@@ -29,40 +28,47 @@ enum class T_CALL {
 class T_RADIO_PARAM {
 
 public:
-    T_RADIO_PARAM()
-    {
-        m_mode = T_RADIO_MODE::RADIO_MODE_OFF;
-        m_state = T_RADIO_STATE::STATE_IDLE;
-        m_id = 0;
-        m_callType = T_CALL::CALL_ID;
-        m_callNumber = 0;
-    }
+    T_RADIO_PARAM() = default;
+    ~T_RADIO_PARAM() = default;
 
     const T_RADIO_MODE & mode() const { return m_mode; }
     T_RADIO_MODE & mode() { return m_mode; }
     const T_RADIO_STATE & state() const { return m_state; }
     T_RADIO_STATE & state() { return m_state; }
-    const uint32_t & id() const { return m_id; }
-    uint32_t & id() { return m_id; }
+    const RadioId & id() const { return m_id; }
+    RadioId & id() { return m_id; }
     const T_CALL & callType() const { return m_callType; }
     T_CALL & callType() { return m_callType; }
     const uint32_t & callNumber() const { return m_callNumber; }
     uint32_t & callNumber() { return m_callNumber; }
+    const uint32_t & txFreqIndex() const { return m_txFreqIndex; }
+    uint32_t & txFreqIndex() { return m_txFreqIndex; }
+    const uint32_t & rxFreqIndex() const { return m_rxFreqIndex; }
+    uint32_t & rxFreqIndex() { return m_rxFreqIndex; }
+    const uint32_t & dataTransmissionRate() const { return m_dataTransmissionRate; }
+    uint32_t & dataTransmissionRate() { return m_dataTransmissionRate; }
 
 private:
-    T_RADIO_MODE m_mode;          // текущий режим
-    T_RADIO_STATE m_state;        // текущее состояние
-    uint32_t m_id;                // номер станции
-    T_CALL m_callType;            // тип текущего вызова
-    uint32_t m_callNumber;        // номер текущего вызова
+    T_RADIO_MODE m_mode                 {T_RADIO_MODE::RADIO_MODE_OFF};
+    T_RADIO_STATE m_state               {T_RADIO_STATE::STATE_IDLE};
+    RadioId m_id                        {0};
+    T_CALL m_callType                   {T_CALL::CALL_ID};
+    uint32_t m_callNumber               {0};
+    uint32_t m_txFreqIndex              {0};
+    uint32_t m_rxFreqIndex              {0};
+    uint32_t m_dataTransmissionRate     {1200};
 };
+
 
 
 class RadioItem : public QGraphicsObject
 {
     Q_OBJECT
 public:
-    explicit RadioItem(int32_t x, int32_t y, uint32_t id, QGraphicsObject *parent = nullptr);
+    static constexpr auto RADIO_DISTANCE     {200};
+    static constexpr auto RADIO_SIZE         {15};
+
+    explicit RadioItem(int32_t x, int32_t y, RadioId id, QGraphicsObject *parent = nullptr);
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
@@ -72,10 +78,6 @@ public:
     const Point2D & getCentrePoint() const;
 
 private:
-
-    static constexpr auto RADIO_DISTANCE     {200};
-    static constexpr auto RADIO_SIZE         {15};
-
     Point2D m_startPos;         // Координаты центра при создании (необходимо помнить для отрисовки)
     Point2D m_curPos;           // Текущие координаты центра
     T_RADIO_PARAM m_params;     // Таблица настроек

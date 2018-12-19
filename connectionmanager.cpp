@@ -7,9 +7,9 @@ ConnectionManager & ConnectionManager::instance() {
     return instance;
 }
 
-ConnectionManager::ConnectionManager()
+ConnectionManager::ConnectionManager() : QObject()
 {
-
+    m_radioItemLinkers.clear();
 }
 
 ConnectionManager::~ConnectionManager()
@@ -21,45 +21,56 @@ void ConnectionManager::addRadioItem(std::shared_ptr<RadioItem> radioItem)
 {
     std::shared_ptr<RadioItemLinker> newItemLinker = std::shared_ptr<RadioItemLinker>(new RadioItemLinker(radioItem));
 
-    for(auto & existedItemLinker : m_radioItems) {
-        existedItemLinker->addNeighbor(newItemLinker);
+    for(auto & existedItemLinker : m_radioItemLinkers) {
+        existedItemLinker.second->addNeighbor(newItemLinker);
     }
 
-    for(auto & existedItemLinker : m_radioItems) {
-        newItemLinker->addNeighbor(existedItemLinker);
+    for(auto & existedItemLinker : m_radioItemLinkers) {
+        newItemLinker->addNeighbor(existedItemLinker.second);
     }
 
-    m_radioItems.push_back(newItemLinker);
+    m_radioItemLinkers.emplace(newItemLinker->getId(), newItemLinker);
 }
 
 bool ConnectionManager::removeRadioItem(std::shared_ptr<RadioItem> radioItem)
 {
-    uint32_t itemId = radioItem->getParams().id();
+    RadioId itemId = radioItem->getParams().id();
 
-    auto foundIter = std::find_if(m_radioItems.begin(), m_radioItems.end(),
-                            [itemId](std::shared_ptr<RadioItemLinker> const & m) {
-                                return m->getId() == itemId;});
+    auto foundIter = std::find_if(m_radioItemLinkers.begin(), m_radioItemLinkers.end(),
+                            [itemId](std::pair<uint32_t, std::shared_ptr<RadioItemLinker>> const & m) {
+                                return m.first == itemId;});
 
-    if(foundIter == m_radioItems.end()) {
+    if(foundIter == m_radioItemLinkers.end()) {
         qDebug() << "Warning: item with ID " << itemId << " not found in connection manager!";
         return false;
     }
 
-    m_radioItems.erase(foundIter);
+    m_radioItemLinkers.erase(foundIter);
 
-    for (auto & item : m_radioItems) {
-        item->removeNeighbor(*foundIter);
+    for (auto & item : m_radioItemLinkers) {
+        item.second->removeNeighbor(foundIter->second);
     }
 
     return true;
 }
 
-void ConnectionManager::updateFor(const uint32_t & radioItemId)
+void ConnectionManager::updateTopologyFor(const uint32_t & radioItemId)
 {
-    for (auto & item : m_radioItems) {
-        if(item->getId() != radioItemId ) {
-            item->updateFor(radioItemId);
+    for (auto & item : m_radioItemLinkers) {
+        if(item.first != radioItemId ) {
+            item.second->updateTopologyFor(radioItemId);
         }
+    }
+}
 
+// -------------------------------------------------- Слоты -----------------------------------------------------
+
+void ConnectionManager::slotSendMessage(QSharedPointer<Message> msg) {
+
+    try {
+        auto sourceLinker =  m_radioItemLinkers.at(msg->sourceId());
+        sourceLinker->launchDistributionMessage (msg);
+    } catch (const std::exception& e){
+        qDebug() << "Error: message from not exist Radio Item with ID " << msg->sourceId() << "; info:" << e.what();
     }
 }

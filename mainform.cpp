@@ -30,9 +30,6 @@ MainForm::~MainForm()
 }
 
 
-
-
-
 // -------------------------------------------------- Слоты -----------------------------------------------------
 
 void MainForm::on_btnAddDevice_clicked()
@@ -60,5 +57,5 @@ void MainForm::slotMouseClick(T_RADIO_PARAM params)
 void MainForm::slotMouseRelease(const uint32_t & radioItemId)
 {
     static ConnectionManager & connectionManager = ConnectionManager::instance();
-    connectionManager.updateFor(radioItemId);
+    connectionManager.updateTopologyFor(radioItemId);
 }

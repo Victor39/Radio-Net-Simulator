@@ -1,8 +1,9 @@
 #include "radioitem.h"
 #include <QPainter>
 #include <QDebug>
+#include <qglobal.h>
 
-RadioItem::RadioItem(int32_t x, int32_t y, uint32_t id, QGraphicsObject *parent) :
+RadioItem::RadioItem(int32_t x, int32_t y, RadioId id, QGraphicsObject *parent) :
     QGraphicsObject(parent), m_startPos(x, y),m_curPos(x, y)
 {
     m_params.mode() = T_RADIO_MODE::RADIO_MODE_OFF;
@@ -22,6 +23,9 @@ QRectF RadioItem::boundingRect() const
 
 void RadioItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
+
     painter->setBrush(getColorByMode());
     QPen pen = painter->pen();
     if(isSelected())

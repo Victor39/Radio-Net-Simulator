@@ -1,32 +1,39 @@
 #ifndef CONNECTIONMANAGER_H
 #define CONNECTIONMANAGER_H
 
-#include <QGraphicsItem>
 #include <memory>
+#include <QGraphicsItem>
 #include "radioitem.h"
 #include "radioitemlinker.h"
+#include "message.h"
+#include <QSharedPointer>
+#include <map>
 
-class ConnectionManager
+
+class ConnectionManager : public QObject
 {
+    Q_OBJECT
+
 public:
     static ConnectionManager & instance();
-    ~ConnectionManager();
+    virtual ~ConnectionManager();
     ConnectionManager(const ConnectionManager&) = delete;
     ConnectionManager& operator=(const ConnectionManager&) = delete;
 
     void addRadioItem(std::shared_ptr<RadioItem> radioItem);
     bool removeRadioItem(std::shared_ptr<RadioItem> radioItem);
-    void updateFor (const uint32_t & radioItemId);
-
+    void updateTopologyFor (const uint32_t & radioItemId);
 
 private:
     ConnectionManager();
 
-    std::list<std::shared_ptr<RadioItemLinker>> m_radioItems;
+    std::map<uint32_t, std::shared_ptr<RadioItemLinker>> m_radioItemLinkers;
 
 signals:
 
 public slots:
+    void slotSendMessage(QSharedPointer<Message> msg);
+
 };
 
 #endif // CONNECTIONMANAGER_H

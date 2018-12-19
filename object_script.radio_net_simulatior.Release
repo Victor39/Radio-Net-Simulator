@@ -1,0 +1,16 @@
+release/main.o
+release/mainform.o
+release/radioitem.o
+release/mgraphicscene.o
+release/mtablemodel.o
+release/connectionmanager.o
+release/point2d.o
+release/radioitemlinker.o
+release/simulatorradiopath.o
+release/message.o
+release/moc_mainform.o
+release/moc_radioitem.o
+release/moc_mgraphicscene.o
+release/moc_mtablemodel.o
+release/moc_connectionmanager.o
+release/moc_simulatorradiopath.o

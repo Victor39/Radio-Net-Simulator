@@ -1,0 +1,16 @@
+debug/main.o
+debug/mainform.o
+debug/radioitem.o
+debug/mgraphicscene.o
+debug/mtablemodel.o
+debug/connectionmanager.o
+debug/point2d.o
+debug/radioitemlinker.o
+debug/simulatorradiopath.o
+debug/message.o
+debug/moc_mainform.o
+debug/moc_radioitem.o
+debug/moc_mgraphicscene.o
+debug/moc_mtablemodel.o
+debug/moc_connectionmanager.o
+debug/moc_simulatorradiopath.o

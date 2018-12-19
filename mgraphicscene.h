@@ -18,7 +18,7 @@ private:
 
 signals:
     void sigMouseClick(T_RADIO_PARAM params);
-    void sigMouseRelease(const uint32_t & radioItemId);
+    void sigMouseRelease(const RadioId & radioItemId);
 
 public slots:
 
