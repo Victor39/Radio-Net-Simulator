@@ -74,11 +74,12 @@ public:
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
-    T_RADIO_PARAM getParams() const;
+    const T_RADIO_PARAM & getParams() const;
 
     const Point2D & getCentrePoint() const;
-
+#ifdef DEBUG_MESSAGE_SEND
     void testSendMessage();
+#endif
 
 private:
     Point2D m_startPos;         // Координаты центра при создании (необходимо помнить для отрисовки)
