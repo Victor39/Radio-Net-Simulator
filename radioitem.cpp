@@ -2,6 +2,7 @@
 #include <QPainter>
 #include <QDebug>
 #include <qglobal.h>
+#include <simulatorradiopath.h>
 
 RadioItem::RadioItem(int32_t x, int32_t y, RadioId id, QGraphicsObject *parent) :
     QGraphicsObject(parent), m_startPos(x, y),m_curPos(x, y)
@@ -13,6 +14,8 @@ RadioItem::RadioItem(int32_t x, int32_t y, RadioId id, QGraphicsObject *parent) 
     m_params.callNumber() = 1;
     QGraphicsObject::setFlag(QGraphicsItem::ItemIsMovable, true);
     QGraphicsObject::setFlag(QGraphicsItem::ItemIsSelectable, true);
+
+    m_radioPath = new SimulatorRadioPath(this);
 }
 
 
@@ -62,6 +65,12 @@ void RadioItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
  const Point2D &RadioItem::getCentrePoint() const
  {
      return m_curPos;
+ }
+
+ void RadioItem::testSendMessage()
+ {
+     uint8_t data[500];
+     m_radioPath->radioDataSend(data, 500);
  }
 
 // -------------------------------------------------------------------------------------------------

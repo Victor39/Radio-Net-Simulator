@@ -22,7 +22,7 @@ public:
 private slots:
     void on_btnAddDevice_clicked();
     void slotMouseClick(T_RADIO_PARAM params);
-    void slotMouseRelease(const uint32_t & radioItemId);
+    void slotMouseRelease(const RadioId & radioItemId);
 
 private:
     Ui::MainForm * m_ui;

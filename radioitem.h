@@ -60,6 +60,7 @@ private:
 };
 
 
+class SimulatorRadioPath;
 
 class RadioItem : public QGraphicsObject
 {
@@ -77,12 +78,16 @@ public:
 
     const Point2D & getCentrePoint() const;
 
+    void testSendMessage();
+
 private:
     Point2D m_startPos;         // Координаты центра при создании (необходимо помнить для отрисовки)
     Point2D m_curPos;           // Текущие координаты центра
     T_RADIO_PARAM m_params;     // Таблица настроек
     QBrush getColorByMode();    // Цвет станции в зависимости от режима
     QRectF getTextRect(QString str);
+
+    SimulatorRadioPath * m_radioPath;
 
 signals:
 

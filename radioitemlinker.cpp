@@ -1,4 +1,6 @@
 #include <QDebug>
+#include <QEventLoop>
+#include <QTimer>
 #include "radioitemlinker.h"
 
 RadioItemLinker::RadioItemLinker(std::shared_ptr<RadioItem> radioItem) : m_radioItem(radioItem)
@@ -8,18 +10,29 @@ RadioItemLinker::RadioItemLinker(std::shared_ptr<RadioItem> radioItem) : m_radio
 
 void RadioItemLinker::addNeighbor(std::shared_ptr<RadioItemLinker> neighbor)
 {
+    std::lock_guard<std::mutex> lock(m_mutex);
     uint32_t distanceToMe = m_radioItem->getCentrePoint().distance(neighbor->getCentrePoint());
     m_neighbors.emplace(neighbor->getId(), std::make_pair(neighbor, distanceToMe));
 }
 
 bool RadioItemLinker::removeNeighbor(std::shared_ptr<RadioItemLinker> neighbor)
 {
+    std::lock_guard<std::mutex> lock(m_mutex);
     m_neighbors.erase(neighbor->getId());
     return true;
 }
 
+void RadioItemLinker::updateTopology()
+{
+    std::lock_guard<std::mutex> lock(m_mutex);
+    for (auto & item : m_neighbors) {
+        item.second.second = getCentrePoint().distance(item.second.first->getCentrePoint());
+    }
+}
+
 void RadioItemLinker::updateTopologyFor(const RadioId &radioItemId)
 {
+    std::lock_guard<std::mutex> lock(m_mutex);
     try
     {
         auto & item = m_neighbors.at(radioItemId);
@@ -42,33 +55,35 @@ RadioId RadioItemLinker::getId() const
 
 void RadioItemLinker::launchReceivingMessage(QSharedPointer<Message> msg)
 {
+    std::lock_guard<std::mutex> lock(m_mutex);
     if(m_radioItem->getParams().rxFreqIndex() == msg->freqIndex()) {
 
-        if ( m_receivingMessages.find(msg->freqIndex()) == m_receivingMessages.end() ) {
+        if (m_receivingMessages.find(msg->freqIndex()) == m_receivingMessages.end()) {
             m_receivingMessages.emplace(msg->freqIndex(), msg);
             int32_t pastTimeMs = msg->startSendTime().msecsTo(QTime::currentTime());
             int32_t remainReceptionTimeMs = msg->durationTimeMs() - (pastTimeMs);
             if(remainReceptionTimeMs > 0) {
-                QTimer::singleShot(remainReceptionTimeMs, this, [&] () { slotTimerAlarmOfEndReceivedMessage(msg);});
+                QTimer::singleShot(remainReceptionTimeMs, this, [this, msg] () { this->finishReceivingMessage(msg); });
             }
             else {
                 m_receivingMessages.erase(msg->freqIndex());
-                qDebug() << "Error: Add message to recive: message receive time has expired";
+                qDebug() << "Error of launch receiving message: message receive time has expired";
             }
         }
         else {
             m_receivingMessages.erase(msg->freqIndex());
-            qDebug() << "Add message to recive: message on this frequency is already being received. Discard both messages";
+            qDebug() << "Warning of launch receiving message: message on this frequency is already being received. Discard both messages";
         }
     }
     else {
-        qDebug() << "Add message to recive: Radio Item with ID '" << m_radioItem->getParams().id() <<"' is on a different frequency. Discard message!";
+        qDebug() << "Warning of launch receiving messag: Radio Item with ID '" << m_radioItem->getParams().id() <<"' is on a different frequency. Discard message!";
     }
 
 }
 
 void RadioItemLinker::launchDistributionMessage (QSharedPointer<Message> msg)
 {
+    std::lock_guard<std::mutex> lock(m_mutex);
     qDebug() << "Launch distribution message from Radio Item with ID'" << msg->sourceId() <<"' ";
 
     if((msg->durationTimeMs() - msg->startSendTime().msecsTo(QTime::currentTime())) <= 0) {
@@ -77,7 +92,7 @@ void RadioItemLinker::launchDistributionMessage (QSharedPointer<Message> msg)
     }
 
     for (auto & neighbor : m_neighbors) {
-        if(neighbor.second.second < RadioItem::RADIO_DISTANCE) {
+        if(neighbor.second.second <= (RadioItem::RADIO_DISTANCE/2)) {
             neighbor.second.first->launchReceivingMessage(msg);
         }
         else {
@@ -86,12 +101,9 @@ void RadioItemLinker::launchDistributionMessage (QSharedPointer<Message> msg)
     }
 }
 
-
-
-// -------------------------------------------------- Слоты -----------------------------------------------------
-
-void RadioItemLinker::slotTimerAlarmOfEndReceivedMessage(QSharedPointer<Message> msg)
+void RadioItemLinker::finishReceivingMessage(QSharedPointer<Message> msg)
 {
+    std::lock_guard<std::mutex> lock(m_mutex);
     if(m_radioItem->getParams().rxFreqIndex() == msg->freqIndex()) {
         qDebug() << "End of receiving message: Radio Item with ID '" << m_radioItem->getParams().id() <<
                     "' successfully received a message from Radio Item  with ID '" << msg->sourceId() <<"'";

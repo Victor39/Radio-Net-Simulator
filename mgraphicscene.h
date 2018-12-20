@@ -11,8 +11,9 @@ public:
     explicit mGraphicScene(QObject *parent = nullptr);
 
 private:
-    void mousePressEvent(QGraphicsSceneMouseEvent * mouseEvent) override;
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent * mouseEvent) override;
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent * mouseEvent) override;
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent * mouseEvent) override;
+    virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
 
 signals:
     void sigMouseClick(T_RADIO_PARAM params);

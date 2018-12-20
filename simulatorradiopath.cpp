@@ -8,7 +8,7 @@
 SimulatorRadioPath::SimulatorRadioPath(RadioItem * pOwner) : m_pOwner(pOwner)
 {
     ConnectionManager & connectionManager = ConnectionManager::instance();
-    QObject::connect(this, SIGNAL(sigSendMessage(QSharedPointer<Message> msg)), &connectionManager, SLOT(slotSendMessage(QSharedPointer<Message> msg)));
+    QObject::connect(this, SIGNAL(sigSendMessage(QSharedPointer<Message>)), &connectionManager, SLOT(slotSendMessage(QSharedPointer<Message>)));
 }
 
 SimulatorRadioPath::~SimulatorRadioPath()

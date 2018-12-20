@@ -17,7 +17,7 @@ MainForm::MainForm(QWidget *parent) :
 
     m_radioParams = new mTableModel(this);
     connect(m_scene, SIGNAL(sigMouseClick(T_RADIO_PARAM)), this, SLOT(slotMouseClick(T_RADIO_PARAM)));
-    connect(m_scene, SIGNAL(sigMouseRelease(const uint32_t &)), this, SLOT(slotMouseRelease(const uint32_t &)));
+    connect(m_scene, SIGNAL(sigMouseRelease(const RadioId &)), this, SLOT(slotMouseRelease(const RadioId &)));
     m_ui->tableParams->setModel(m_radioParams);
     m_ui->tableParams->horizontalHeader()->setStretchLastSection(true);
     m_ui->tableParams->horizontalHeader()->hide();
@@ -54,7 +54,7 @@ void MainForm::slotMouseClick(T_RADIO_PARAM params)
 }
 
 // Слот вызывается при отжатии кнопки мыши с объекта
-void MainForm::slotMouseRelease(const uint32_t & radioItemId)
+void MainForm::slotMouseRelease(const RadioId & radioItemId)
 {
     static ConnectionManager & connectionManager = ConnectionManager::instance();
     connectionManager.updateTopologyFor(radioItemId);

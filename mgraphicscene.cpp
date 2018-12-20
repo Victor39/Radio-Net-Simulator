@@ -59,3 +59,17 @@ void mGraphicScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
     QGraphicsScene::mouseReleaseEvent(mouseEvent);
 
 }
+
+void mGraphicScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent) {
+
+    QPointF screenPos = mouseEvent->scenePos();
+    if(mouseEvent->button() == Qt::LeftButton)
+    {
+        QGraphicsItem * item = itemAt(screenPos, QTransform());
+        if(item)
+        {
+            static_cast<RadioItem *>(item)->testSendMessage();
+        }
+    }
+    QGraphicsScene::mouseDoubleClickEvent(mouseEvent);
+}

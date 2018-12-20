@@ -57,7 +57,10 @@ bool ConnectionManager::removeRadioItem(std::shared_ptr<RadioItem> radioItem)
 void ConnectionManager::updateTopologyFor(const uint32_t & radioItemId)
 {
     for (auto & item : m_radioItemLinkers) {
-        if(item.first != radioItemId ) {
+        if(item.first == radioItemId ) {
+            item.second->updateTopology();
+        }
+        else {
             item.second->updateTopologyFor(radioItemId);
         }
     }
