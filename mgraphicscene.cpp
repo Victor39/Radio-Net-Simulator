@@ -17,20 +17,20 @@ void mGraphicScene::mousePressEvent(QGraphicsSceneMouseEvent * mouseEvent)
         QGraphicsItem * item = itemAt(screenPos, QTransform());
         if(item)
         {
-//            if(item->data(0).toString() == "block")
-//            {
-//                mnu_block *pblock = (mnu_block *)item;
-//                QVector<T_BLOCK_SETTING> sets = diag->getBlockSettingNames(pblock->getInfo());
-//                tempSettings = pblock->getLocalSettings();
-//                //QDialog *p = createSettingsDialog(sets, pblock->getLocalSettings());
-//                T_BLOCK_RAW tempRaw = diag->getBlockRawByInfo(pblock->getInfo());
-//                QDialog *p = createSettingsDialog(sets, QString::fromStdString(pblock->getInfo().help), QString::fromStdString(pblock->getInfo().desc));
-//                curEditedItem = pblock;
-//                int result = p->exec();
-//                if(result)
-//                    pblock->setLocalSettings(tempSettings);
-//                curEditedItem = NULL;
-//            }
+            //            if(item->data(0).toString() == "block")
+            //            {
+            //                mnu_block *pblock = (mnu_block *)item;
+            //                QVector<T_BLOCK_SETTING> sets = diag->getBlockSettingNames(pblock->getInfo());
+            //                tempSettings = pblock->getLocalSettings();
+            //                //QDialog *p = createSettingsDialog(sets, pblock->getLocalSettings());
+            //                T_BLOCK_RAW tempRaw = diag->getBlockRawByInfo(pblock->getInfo());
+            //                QDialog *p = createSettingsDialog(sets, QString::fromStdString(pblock->getInfo().help), QString::fromStdString(pblock->getInfo().desc));
+            //                curEditedItem = pblock;
+            //                int result = p->exec();
+            //                if(result)
+            //                    pblock->setLocalSettings(tempSettings);
+            //                curEditedItem = NULL;
+            //            }
             emit sigMouseClick(static_cast<RadioItem *>(item)->getParams());
         }
         else
@@ -60,6 +60,7 @@ void mGraphicScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 }
 
+#ifdef DEBUG_MESSAGE_SEND
 void mGraphicScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent) {
 
     QPointF screenPos = mouseEvent->scenePos();
@@ -73,3 +74,4 @@ void mGraphicScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent) 
     }
     QGraphicsScene::mouseDoubleClickEvent(mouseEvent);
 }
+#endif

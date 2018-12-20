@@ -57,7 +57,7 @@ void RadioItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 //    qDebug() << m_curPos.x() << " : " << m_curPos.y();
 }
 
- T_RADIO_PARAM RadioItem::getParams() const {
+ const T_RADIO_PARAM & RadioItem::getParams() const {
 
      return m_params;
  }
@@ -67,11 +67,13 @@ void RadioItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
      return m_curPos;
  }
 
+ #ifdef DEBUG_MESSAGE_SEND
  void RadioItem::testSendMessage()
  {
      uint8_t data[500];
      m_radioPath->radioDataSend(data, 500);
  }
+#endif
 
 // -------------------------------------------------------------------------------------------------
 

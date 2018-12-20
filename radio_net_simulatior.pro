@@ -36,4 +36,5 @@ HEADERS  += mainform.h \
 
 FORMS    += mainform.ui
 
-CONFIG += c++11
+DEFINES += DEBUG_MESSAGE_SEND
+
