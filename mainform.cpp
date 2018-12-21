@@ -1,7 +1,5 @@
-#include <memory>
 #include "mainform.h"
 #include "ui_mainform.h"
-#include "connectionmanager.h"
 #include <QDebug>
 
 MainForm::MainForm(QWidget *parent) :
@@ -17,10 +15,12 @@ MainForm::MainForm(QWidget *parent) :
 
     m_radioParams = new mTableModel(this);
     connect(m_scene, SIGNAL(sigMouseClick(T_RADIO_PARAM)), this, SLOT(slotMouseClick(T_RADIO_PARAM)));
-    connect(m_scene, SIGNAL(sigMouseRelease(const RadioId &)), this, SLOT(slotMouseRelease(const RadioId &)));
+    connect(m_scene, SIGNAL(sigMouseRelease(RadioItem *)), this, SLOT(slotMouseRelease(RadioItem *)));
     m_ui->tableParams->setModel(m_radioParams);
     m_ui->tableParams->horizontalHeader()->setStretchLastSection(true);
     m_ui->tableParams->horizontalHeader()->hide();
+    m_ui->statusBar->addWidget(&status, 100);
+    connect(m_scene, SIGNAL(sigStatus(QString)), this, SLOT(showStatus(QString)));
 }
 
 MainForm::~MainForm()
@@ -35,14 +35,12 @@ MainForm::~MainForm()
 void MainForm::on_btnAddDevice_clicked()
 {
     static uint32_t deviceId = 1;
-    int32_t x = 300 * rand() / RAND_MAX;
-    int32_t y = 300 * rand() / RAND_MAX;
+    int32_t x = 150 - 300 * rand() / RAND_MAX;
+    int32_t y = 150 - 300 * rand() / RAND_MAX;
 
-    std::shared_ptr<RadioItem> item = std::shared_ptr<RadioItem>(new RadioItem(75 + x, 75 + y, deviceId++));
-    static ConnectionManager & connectionManager = ConnectionManager::instance();
-    connectionManager.addRadioItem(item);
-
-    m_scene->addItem(item.get());
+    RadioItem * item = new RadioItem(x, y, deviceId++);
+    connect(item, SIGNAL(sigStatus(QString)), this, SLOT(showStatus(QString)));
+    m_scene->addItem(item);
     m_scene->invalidate();
 }
 
@@ -54,8 +52,22 @@ void MainForm::slotMouseClick(T_RADIO_PARAM params)
 }
 
 // Слот вызывается при отжатии кнопки мыши с объекта
-void MainForm::slotMouseRelease(const RadioId & radioItemId)
+void MainForm::slotMouseRelease(RadioItem * radioItem)
 {
-    static ConnectionManager & connectionManager = ConnectionManager::instance();
-    connectionManager.updateTopologyFor(radioItemId);
+    radioItem->updateTopology();
+}
+
+// Слот вызывается при изменении кол-ва соседей у станции
+void MainForm::slotNbChanged(QList<T_RADIO_NB> listNbStore)
+{
+
+}
+// Вывод в строку статуса
+
+
+
+
+void MainForm::showStatus(QString str)
+{
+    status.setText(str);
 }

@@ -1,11 +1,19 @@
 #include "radioitem.h"
 #include <QPainter>
+#include <memory>
+#include <QGraphicsView>
+#include <QStyle>
+#include <QMenu>
+#include <QStyleOptionGraphicsItem>
+#include <QGraphicsSceneContextMenuEvent>
 #include <QDebug>
 #include <qglobal.h>
 #include <simulatorradiopath.h>
+#include <math.h>
+#include "connectionmanager.h"
 
 RadioItem::RadioItem(int32_t x, int32_t y, RadioId id, QGraphicsObject *parent) :
-    QGraphicsObject(parent), m_startPos(x, y),m_curPos(x, y)
+    QGraphicsObject(parent)
 {
     m_params.mode() = T_RADIO_MODE::RADIO_MODE_OFF;
     m_params.state() = T_RADIO_STATE::STATE_IDLE;
@@ -14,14 +22,23 @@ RadioItem::RadioItem(int32_t x, int32_t y, RadioId id, QGraphicsObject *parent) 
     m_params.callNumber() = 1;
     QGraphicsObject::setFlag(QGraphicsItem::ItemIsMovable, true);
     QGraphicsObject::setFlag(QGraphicsItem::ItemIsSelectable, true);
+    setPos(x, y);
 
     m_radioPath = new SimulatorRadioPath(this);
+
+    static ConnectionManager & connectionManager = ConnectionManager::instance();
+    connectionManager.addRadioItem(this);
+}
+
+RadioItem::~RadioItem()
+{
+    qDebug() << "Removed RadioItem '" << m_params.id() << "'";
 }
 
 
 QRectF RadioItem::boundingRect() const
 {
-    return QRectF(m_startPos.x()-RADIO_SIZE/2, m_startPos.y()-RADIO_SIZE/2, RADIO_SIZE, RADIO_SIZE);
+    return QRectF(-RADIO_SIZE/2, -RADIO_SIZE/2, RADIO_SIZE, RADIO_SIZE);
 }
 
 void RadioItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -29,32 +46,52 @@ void RadioItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    painter->setBrush(getColorByMode());
+
     QPen pen = painter->pen();
+    painter->setRenderHint(QPainter::Antialiasing, true);
+    // Связи с соседями
+    pen.setColor(Qt::darkBlue);
+    pen.setStyle(Qt::DashLine);
+    painter->setPen(pen);
+    foreach(RadioItem *item, m_params.nb())
+    {
+        if(m_params.id() > item->getParams().id())    // Рисуем только одну линию
+            painter->drawLine(mapFromScene(this->getScenePos()), mapFromScene(item->getScenePos()));
+    }
+    // Внутренний круг (станция)
+    painter->setBrush(getColorByMode());
     if(isSelected())
         pen.setColor(Qt::magenta);
     else
         pen.setColor(Qt::black);
     pen.setWidth(3);
+    pen.setStyle(Qt::SolidLine);
     painter->setPen(pen);
-    painter->drawEllipse(m_startPos.x()-RADIO_SIZE/2, m_startPos.y()-RADIO_SIZE/2, RADIO_SIZE, RADIO_SIZE);
+    painter->drawEllipse(-RADIO_SIZE/2, -RADIO_SIZE/2, RADIO_SIZE, RADIO_SIZE);
 
+    // Внешний круг (радиус действия)
+    painter->setBrush(QBrush(Qt::white, Qt::NoBrush));
+    pen.setStyle(Qt::DotLine);
+    pen.setColor(Qt::lightGray);
+    pen.setWidth(1);
+    painter->setPen(pen);
+    painter->drawEllipse(-RADIO_DISTANCE/2, -RADIO_DISTANCE/2, RADIO_DISTANCE, RADIO_DISTANCE);
+
+    // Надпись
     pen.setColor(Qt::black);
     painter->setPen(pen);
-    QString label = QString::number(m_params.id());
+
+    // Формируем строку с подчеркиванием, потому что с пробелом не считает прямоугольник
+    //static ConnectionManager & connectionManager = ConnectionManager::instance();
+    //connectionManager.findRadioItemBy();
+    QString label = QString::number(m_params.id()) + "_[" + QString::number(m_params.nb().length()) + "]";
     QRectF tpos = getTextRect(label);
 
-    painter->drawText(QRectF(m_startPos.x()-tpos.width()/2, m_startPos.y() + RADIO_SIZE/2 + 5, tpos.width(), tpos.height()), label);
+    // Повторяем строку, но с пробелом
+    label = QString::number(m_params.id()) + " [" + QString::number(m_params.nb().length()) + "]";
+    painter->drawText(QRectF(-tpos.width()/2, RADIO_SIZE/2 + 5, tpos.width(), tpos.height()), label);
 
-    painter->setBrush(QBrush(Qt::white, Qt::NoBrush));
-    painter->setPen(Qt::DotLine);
-    painter->setPen(Qt::lightGray);
-    painter->drawEllipse(m_startPos.x()-RADIO_DISTANCE/2, m_startPos.y()-RADIO_DISTANCE/2, RADIO_DISTANCE, RADIO_DISTANCE);
-
-    m_curPos.x() = m_startPos.x() + static_cast<int32_t>(this->pos().x());
-    m_curPos.y() = m_startPos.y() + static_cast<int32_t>(this->pos().y());
-
-//    qDebug() << m_curPos.x() << " : " << m_curPos.y();
+    painter->setRenderHint(QPainter::Antialiasing, false);
 }
 
  const T_RADIO_PARAM & RadioItem::getParams() const {
@@ -62,12 +99,18 @@ void RadioItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
      return m_params;
  }
 
- const Point2D &RadioItem::getCentrePoint() const
- {
-     return m_curPos;
+ T_RADIO_PARAM & RadioItem::getParams() {
+
+     return m_params;
  }
 
- #ifdef DEBUG_MESSAGE_SEND
+ void RadioItem::updateTopology()
+ {
+     static ConnectionManager & connectionManager = ConnectionManager::instance();
+     connectionManager.updateTopologyFor(m_params.id());
+ }
+
+#ifdef DEBUG_MESSAGE_SEND
  void RadioItem::testSendMessage()
  {
      uint8_t data[500];
@@ -77,7 +120,7 @@ void RadioItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 
 // -------------------------------------------------------------------------------------------------
 
-QBrush RadioItem::getColorByMode()   // Цвет станции в зависимости от режима
+ QBrush RadioItem::getColorByMode() const   // Цвет станции в зависимости от режима
 {
     switch(m_params.mode())
     {
@@ -91,8 +134,97 @@ QBrush RadioItem::getColorByMode()   // Цвет станции в зависи�
     return QBrush(Qt::white, Qt::NoBrush);
 }
 
-QRectF RadioItem::getTextRect(QString str)
+/**
+ * @brief RadioItem::getTextRect - функция возвращает прямоугольник вокруг заданного текста
+ * @param str - исходный текст
+ * @return - прямоугольник
+ */
+ QRectF RadioItem::getTextRect(const QString & str) const
 {
     QFontMetrics metr(QFont("Tahoma"));
     return metr.boundingRect(str);
+}
+
+/**
+ * @brief RadioItem::getScenePos - функция возвращает координаты объекта на сцене
+ * @return
+ */
+QPointF RadioItem::getScenePos() const
+{
+    return scenePos();
+}
+
+/**
+ * @brief RadioItem::distance - функция возвращает расстояние между двумя точками на плоскости
+ * @param x1, y1 - координаты первой точки
+ * @param x2, y2 - координаты второй точки
+ * @return - расстояние
+ */
+uint32_t RadioItem::distance(qreal x1, qreal y1, qreal x2, qreal y2) const
+{
+    uint32_t dist = static_cast<uint32_t>(sqrt((x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2)));
+    return dist;
+}
+
+/**
+ * @brief RadioItem::distanceTo - функция возвращает расстояние от текущего объекта до объекта item на сцене
+ * @param item - целевой объект
+ * @return - расстояние
+ */
+uint32_t RadioItem::distanceTo(const RadioItem *item) const
+{
+    return distance(this->scenePos().x(), this->scenePos().y(), item->getScenePos().x(), item->getScenePos().y());
+}
+
+/**
+ * @brief RadioItem::contextMenuEvent - контекстное меню объекта
+ * @param event
+ */
+void RadioItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
+{
+    if (!isSelected() && scene())
+    {
+        scene()->clearSelection();
+        setSelected(true);
+    }
+
+    QMenu menu;
+    QAction *switchAction;
+    QAction *delAction = menu.addAction("Удалить");
+    if(m_params.mode() != T_RADIO_MODE::RADIO_MODE_OFF)
+        switchAction = menu.addAction("Выключить");
+    else
+        switchAction = menu.addAction("Включить");
+
+    QAction *selectedAction = menu.exec(event->screenPos());
+
+    if (selectedAction == delAction)
+        deleteSelectedItems(scene());
+    else if (selectedAction == switchAction)
+    {
+        m_params.mode() = (m_params.mode() == T_RADIO_MODE::RADIO_MODE_OFF) ? T_RADIO_MODE::RADIO_MODE_RX:T_RADIO_MODE::RADIO_MODE_OFF;
+        scene()->invalidate();
+    }
+}
+
+/**
+ * @brief RadioItem::deleteSelectedItems - функция удаляет объект со сцены
+ * @param scene
+ */
+void RadioItem::deleteSelectedItems(QGraphicsScene *scene)
+{
+    if (!scene)
+        return;
+
+    QList<QGraphicsItem *> selected;
+    selected = scene->selectedItems();
+
+    foreach (QGraphicsItem *item, selected) {
+        RadioItem *itemBase = qgraphicsitem_cast<RadioItem *>(item);
+        if (itemBase) {
+            static ConnectionManager & connectionManager = ConnectionManager::instance();
+            connectionManager.removeRadioItemBy(itemBase->getParams().id());
+            delete itemBase;
+        }
+    }
 }

@@ -20,9 +20,10 @@ public:
     ConnectionManager(const ConnectionManager&) = delete;
     ConnectionManager& operator=(const ConnectionManager&) = delete;
 
-    void addRadioItem(std::shared_ptr<RadioItem> radioItem);
-    bool removeRadioItem(std::shared_ptr<RadioItem> radioItem);
-    void updateTopologyFor (const uint32_t & radioItemId);
+    void addRadioItem(RadioItem * radioItem);
+    bool removeRadioItemBy(const RadioId & radioItemId);
+    const RadioItem * findRadioItemBy(const RadioId & radioItemId) const;
+    void updateTopologyFor (const RadioId & radioItemId);
 
 private:
     ConnectionManager();

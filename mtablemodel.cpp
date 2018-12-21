@@ -1,3 +1,4 @@
+#include <QComboBox>
 #include "mtablemodel.h"
 
 /**

@@ -2,6 +2,7 @@
 #define MAINFORM_H
 
 #include <QMainWindow>
+#include <QLabel>
 #include <QGraphicsView>
 #include "mgraphicscene.h"
 #include "radioitem.h"
@@ -22,13 +23,16 @@ public:
 private slots:
     void on_btnAddDevice_clicked();
     void slotMouseClick(T_RADIO_PARAM params);
-    void slotMouseRelease(const RadioId & radioItemId);
+    void slotMouseRelease(RadioItem * radioItem);
+    void slotNbChanged(QList<T_RADIO_NB> listNbStore);
+    void showStatus(QString str);
 
 private:
     Ui::MainForm * m_ui;
     mGraphicScene * m_scene;
     QList<RadioItem *> m_radios;
     mTableModel * m_radioParams;
+    QLabel status;
 };
 
 #endif // MAINFORM_H

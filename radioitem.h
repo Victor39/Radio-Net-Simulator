@@ -3,7 +3,6 @@
 
 #include <stdint.h>
 #include <QGraphicsItem>
-#include <point2d.h>
 
 using RadioId = uint32_t;
 
@@ -17,13 +16,15 @@ enum class T_RADIO_STATE {
     STATE_IDLE,
     STATE_SYNC,
     STATE_CALL,
- };
+};
 
 enum class T_CALL {
     CALL_ID,
     CALL_GROUP,
     CALL_CIRC,
 };
+
+class RadioItem;
 
 class T_RADIO_PARAM {
 
@@ -48,6 +49,7 @@ public:
     const uint32_t & dataTransmissionRate() const { return m_dataTransmissionRate; }
     uint32_t & dataTransmissionRate() { return m_dataTransmissionRate; }
 
+    QList<RadioItem *> nb() {return m_nb;}
 private:
     T_RADIO_MODE m_mode                 {T_RADIO_MODE::RADIO_MODE_OFF};
     T_RADIO_STATE m_state               {T_RADIO_STATE::STATE_IDLE};
@@ -57,6 +59,7 @@ private:
     uint32_t m_txFreqIndex              {0};
     uint32_t m_rxFreqIndex              {0};
     uint32_t m_dataTransmissionRate     {1200};
+    QList<RadioItem *> m_nb;         // таблица соседей
 };
 
 
@@ -70,27 +73,38 @@ public:
     static constexpr auto RADIO_SIZE         {15};
 
     explicit RadioItem(int32_t x, int32_t y, RadioId id, QGraphicsObject *parent = nullptr);
+    ~RadioItem();
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
     const T_RADIO_PARAM & getParams() const;
+    T_RADIO_PARAM & getParams();
 
-    const Point2D & getCentrePoint() const;
+    void updateTopology();
+
+    QPointF getScenePos() const;
+    uint32_t distanceTo(const RadioItem *item) const;
+
 #ifdef DEBUG_MESSAGE_SEND
     void testSendMessage();
 #endif
 
 private:
-    Point2D m_startPos;         // Координаты центра при создании (необходимо помнить для отрисовки)
-    Point2D m_curPos;           // Текущие координаты центра
     T_RADIO_PARAM m_params;     // Таблица настроек
-    QBrush getColorByMode();    // Цвет станции в зависимости от режима
-    QRectF getTextRect(QString str);
+    QBrush getColorByMode() const;    // Цвет станции в зависимости от режима
+    QRectF getTextRect(const QString & str) const;
 
     SimulatorRadioPath * m_radioPath;
 
+    uint32_t distance(qreal x1, qreal y1, qreal x2, qreal y2) const;
+    ////
+    void deleteSelectedItems(QGraphicsScene *scene);
+    virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
+    ////
+
 signals:
+    void sigStatus(QString str);
 
 public slots:
 
