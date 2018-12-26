@@ -116,3 +116,11 @@ const RadioItem *RadioItemLinker::radioItem() const
     return m_radioItem;
 }
 
+void RadioItemLinker::getAvailableNeighbors(std::list<const RadioItem *> &neighbors) const
+{
+    for (auto & neighbor : m_neighbors) {
+        if(neighbor.second.second <= (RadioItem::RADIO_DISTANCE/2)) {
+            neighbors.push_back(neighbor.second.first->radioItem());
+        }
+    }
+}

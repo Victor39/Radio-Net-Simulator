@@ -81,6 +81,16 @@ void ConnectionManager::updateTopologyFor(const RadioId & radioItemId)
     }
 }
 
+void ConnectionManager::getAvailableNeighborsFor(const RadioId &radioItemId, std::list<const RadioItem *> & neighbors) const
+{
+    try {
+        auto radioLinker =  m_radioItemLinkers.at(radioItemId);
+        radioLinker->getAvailableNeighbors(neighbors);
+    } catch (const std::exception& e){
+        qCritical() << "Error: not exist Radio Item '" << radioItemId << "' in connection Manager; info:" << e.what();
+    }
+}
+
 // -------------------------------------------------- Слоты -----------------------------------------------------
 
 void ConnectionManager::slotSendMessage(QSharedPointer<Message> msg) {

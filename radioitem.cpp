@@ -49,15 +49,8 @@ void RadioItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 
     QPen pen = painter->pen();
     painter->setRenderHint(QPainter::Antialiasing, true);
-    // Связи с соседями
-    pen.setColor(Qt::darkBlue);
-    pen.setStyle(Qt::DashLine);
-    painter->setPen(pen);
-    foreach(RadioItem *item, m_params.nb())
-    {
-        if(m_params.id() > item->getParams().id())    // Рисуем только одну линию
-            painter->drawLine(mapFromScene(this->getScenePos()), mapFromScene(item->getScenePos()));
-    }
+
+
     // Внутренний круг (станция)
     painter->setBrush(getColorByMode());
     if(isSelected())
@@ -81,14 +74,28 @@ void RadioItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     pen.setColor(Qt::black);
     painter->setPen(pen);
 
+    // Связи с соседями
+    pen.setColor(Qt::darkBlue);
+    pen.setStyle(Qt::DashLine);
+    painter->setPen(pen);
+
+    static ConnectionManager & connectionManager = ConnectionManager::instance();
+    std::list<const RadioItem *> neighbors;
+    connectionManager.getAvailableNeighborsFor(m_params.id(), neighbors);
+    for(auto const & item : neighbors) {
+        if(m_params.id() > item->getParams().id()) { // Рисуем только одну линию
+            painter->drawLine(mapFromScene(this->getScenePos()), mapFromScene(item->getScenePos()));
+        }
+    }
+
     // Формируем строку с подчеркиванием, потому что с пробелом не считает прямоугольник
     //static ConnectionManager & connectionManager = ConnectionManager::instance();
     //connectionManager.findRadioItemBy();
-    QString label = QString::number(m_params.id()) + "_[" + QString::number(m_params.nb().length()) + "]";
+    QString label = QString::number(m_params.id()) + "_[" + QString::number(neighbors.size()) + "]";
     QRectF tpos = getTextRect(label);
 
     // Повторяем строку, но с пробелом
-    label = QString::number(m_params.id()) + " [" + QString::number(m_params.nb().length()) + "]";
+    label = QString::number(m_params.id()) + " [" + QString::number(neighbors.size()) + "]";
     painter->drawText(QRectF(-tpos.width()/2, RADIO_SIZE/2 + 5, tpos.width(), tpos.height()), label);
 
     painter->setRenderHint(QPainter::Antialiasing, false);

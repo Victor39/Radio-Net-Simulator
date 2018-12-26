@@ -23,6 +23,7 @@ public:
     void launchDistributionMessage (QSharedPointer<Message> msg);
     void finishReceivingMessage(QSharedPointer<Message> msg);
     const RadioItem *radioItem() const;
+    void getAvailableNeighbors(std::list<const RadioItem *> & neighbors) const;
 
 private:
     std::mutex m_mutex;

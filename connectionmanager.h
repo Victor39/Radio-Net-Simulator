@@ -24,11 +24,12 @@ public:
     bool removeRadioItemBy(const RadioId & radioItemId);
     const RadioItem * findRadioItemBy(const RadioId & radioItemId) const;
     void updateTopologyFor (const RadioId & radioItemId);
+    void getAvailableNeighborsFor (const RadioId & radioItemId, std::list<const RadioItem *> & neighbors) const;
 
 private:
     ConnectionManager();
 
-    std::unordered_map<uint32_t, std::shared_ptr<RadioItemLinker>> m_radioItemLinkers;
+    std::unordered_map<RadioId, std::shared_ptr<RadioItemLinker>> m_radioItemLinkers;
 
 signals:
 

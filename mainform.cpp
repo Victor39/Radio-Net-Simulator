@@ -15,7 +15,6 @@ MainForm::MainForm(QWidget *parent) :
 
     m_radioParams = new mTableModel(this);
     connect(m_scene, SIGNAL(sigMouseClick(T_RADIO_PARAM)), this, SLOT(slotMouseClick(T_RADIO_PARAM)));
-    connect(m_scene, SIGNAL(sigMouseRelease(RadioItem *)), this, SLOT(slotMouseRelease(RadioItem *)));
     m_ui->tableParams->setModel(m_radioParams);
     m_ui->tableParams->horizontalHeader()->setStretchLastSection(true);
     m_ui->tableParams->horizontalHeader()->hide();
@@ -51,22 +50,8 @@ void MainForm::slotMouseClick(T_RADIO_PARAM params)
     m_ui->tableParams->repaint();
 }
 
-// Слот вызывается при отжатии кнопки мыши с объекта
-void MainForm::slotMouseRelease(RadioItem * radioItem)
-{
-    radioItem->updateTopology();
-}
 
-// Слот вызывается при изменении кол-ва соседей у станции
-void MainForm::slotNbChanged(QList<T_RADIO_NB> listNbStore)
-{
-
-}
 // Вывод в строку статуса
-
-
-
-
 void MainForm::showStatus(QString str)
 {
     status.setText(str);

@@ -23,8 +23,6 @@ public:
 private slots:
     void on_btnAddDevice_clicked();
     void slotMouseClick(T_RADIO_PARAM params);
-    void slotMouseRelease(RadioItem * radioItem);
-    void slotNbChanged(QList<T_RADIO_NB> listNbStore);
     void showStatus(QString str);
 
 private:
