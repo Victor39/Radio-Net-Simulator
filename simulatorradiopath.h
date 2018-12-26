@@ -32,6 +32,7 @@ private:
 
 signals:
     void sigSendMessage(QSharedPointer<Message> msg);
+
 };
 
 #endif // SIMULATORRADIOPATH_H

@@ -22,8 +22,8 @@ public:
 
 private slots:
     void on_btnAddDevice_clicked();
-    void slotMouseClick(T_RADIO_PARAM params);
-    void showStatus(QString str);
+    void slotMouseClick(const T_RADIO_PARAM params);
+    void slotShowStatus(const QString str);
 
 private:
     Ui::MainForm * m_ui;

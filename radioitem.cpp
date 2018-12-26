@@ -54,7 +54,7 @@ void RadioItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     // Внутренний круг (станция)
     painter->setBrush(getColorByMode());
     if(isSelected())
-        pen.setColor(Qt::magenta);
+        pen.setColor(Qt::blue);
     else
         pen.setColor(Qt::black);
     pen.setWidth(3);
@@ -101,42 +101,42 @@ void RadioItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     painter->setRenderHint(QPainter::Antialiasing, false);
 }
 
- const T_RADIO_PARAM & RadioItem::getParams() const {
+const T_RADIO_PARAM & RadioItem::getParams() const {
 
-     return m_params;
- }
+    return m_params;
+}
 
- T_RADIO_PARAM & RadioItem::getParams() {
+T_RADIO_PARAM & RadioItem::getParams() {
 
-     return m_params;
- }
+    return m_params;
+}
 
- void RadioItem::updateTopology()
- {
-     static ConnectionManager & connectionManager = ConnectionManager::instance();
-     connectionManager.updateTopologyFor(m_params.id());
- }
+void RadioItem::updateTopology()
+{
+    static ConnectionManager & connectionManager = ConnectionManager::instance();
+    connectionManager.updateTopologyFor(m_params.id());
+}
 
 #ifdef DEBUG_MESSAGE_SEND
- void RadioItem::testSendMessage()
- {
-     uint8_t data[500];
-     m_radioPath->radioDataSend(data, 500);
- }
+void RadioItem::testSendMessage()
+{
+    uint8_t data[500];
+    m_radioPath->radioDataSend(data, 500);
+}
 #endif
 
 // -------------------------------------------------------------------------------------------------
 
- QBrush RadioItem::getColorByMode() const   // Цвет станции в зависимости от режима
+QBrush RadioItem::getColorByMode() const   // Цвет станции в зависимости от режима
 {
     switch(m_params.mode())
     {
-        case T_RADIO_MODE::RADIO_MODE_OFF:
-            return QBrush(Qt::gray);
-        case T_RADIO_MODE::RADIO_MODE_TX:
-            return QBrush(Qt::red);
-        case T_RADIO_MODE::RADIO_MODE_RX:
-            return QBrush(Qt::yellow);
+    case T_RADIO_MODE::RADIO_MODE_OFF:
+        return QBrush(Qt::gray);
+    case T_RADIO_MODE::RADIO_MODE_TX:
+        return QBrush(Qt::red);
+    case T_RADIO_MODE::RADIO_MODE_RX:
+        return QBrush(Qt::green);
     }
     return QBrush(Qt::white, Qt::NoBrush);
 }
@@ -146,7 +146,7 @@ void RadioItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
  * @param str - исходный текст
  * @return - прямоугольник
  */
- QRectF RadioItem::getTextRect(const QString & str) const
+QRectF RadioItem::getTextRect(const QString & str) const
 {
     QFontMetrics metr(QFont("Tahoma"));
     return metr.boundingRect(str);
@@ -197,7 +197,7 @@ void RadioItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 
     QMenu menu;
     QAction *switchAction;
-    QAction *delAction = menu.addAction("Удалить");
+    QAction *deleteAction = menu.addAction("Удалить");
     if(m_params.mode() != T_RADIO_MODE::RADIO_MODE_OFF)
         switchAction = menu.addAction("Выключить");
     else
@@ -205,10 +205,10 @@ void RadioItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 
     QAction *selectedAction = menu.exec(event->screenPos());
 
-    if (selectedAction == delAction)
+    if (selectedAction == deleteAction) {
         deleteSelectedItems(scene());
-    else if (selectedAction == switchAction)
-    {
+    }
+    else if (selectedAction == switchAction) {
         m_params.mode() = (m_params.mode() == T_RADIO_MODE::RADIO_MODE_OFF) ? T_RADIO_MODE::RADIO_MODE_RX:T_RADIO_MODE::RADIO_MODE_OFF;
         scene()->invalidate();
     }

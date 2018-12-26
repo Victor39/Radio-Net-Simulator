@@ -14,12 +14,12 @@ MainForm::MainForm(QWidget *parent) :
     m_ui->screen->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
 
     m_radioParams = new mTableModel(this);
-    connect(m_scene, SIGNAL(sigMouseClick(T_RADIO_PARAM)), this, SLOT(slotMouseClick(T_RADIO_PARAM)));
+    connect(m_scene, SIGNAL(sigMouseClick(const T_RADIO_PARAM)), this, SLOT(slotMouseClick(const T_RADIO_PARAM)));
     m_ui->tableParams->setModel(m_radioParams);
     m_ui->tableParams->horizontalHeader()->setStretchLastSection(true);
     m_ui->tableParams->horizontalHeader()->hide();
     m_ui->statusBar->addWidget(&status, 100);
-    connect(m_scene, SIGNAL(sigStatus(QString)), this, SLOT(showStatus(QString)));
+    connect(m_scene, SIGNAL(sigStatus(const QString)), this, SLOT(slotShowStatus(const QString)));
 }
 
 MainForm::~MainForm()
@@ -38,13 +38,13 @@ void MainForm::on_btnAddDevice_clicked()
     int32_t y = 150 - 300 * rand() / RAND_MAX;
 
     RadioItem * item = new RadioItem(x, y, deviceId++);
-    connect(item, SIGNAL(sigStatus(QString)), this, SLOT(showStatus(QString)));
+    connect(item, SIGNAL(sigStatus(const QString)), this, SLOT(slotShowStatus(const QString)));
     m_scene->addItem(item);
     m_scene->invalidate();
 }
 
 // Слот вызывается при нажатии кнопки мыши на объекте
-void MainForm::slotMouseClick(T_RADIO_PARAM params)
+void MainForm::slotMouseClick(const T_RADIO_PARAM params)
 {
     m_radioParams->loadModel(params);
     m_ui->tableParams->repaint();
@@ -52,7 +52,7 @@ void MainForm::slotMouseClick(T_RADIO_PARAM params)
 
 
 // Вывод в строку статуса
-void MainForm::showStatus(QString str)
+void MainForm::slotShowStatus(const QString str)
 {
     status.setText(str);
 }

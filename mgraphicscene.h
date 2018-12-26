@@ -18,7 +18,7 @@ private:
 #endif
 
 signals:
-    void sigMouseClick(T_RADIO_PARAM params);
+    void sigMouseClick(const T_RADIO_PARAM params);
     void sigStatus(QString str);
 
 public slots:

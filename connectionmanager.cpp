@@ -92,7 +92,6 @@ void ConnectionManager::getAvailableNeighborsFor(const RadioId &radioItemId, std
 }
 
 // -------------------------------------------------- Слоты -----------------------------------------------------
-
 void ConnectionManager::slotSendMessage(QSharedPointer<Message> msg) {
 
     try {

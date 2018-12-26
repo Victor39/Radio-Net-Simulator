@@ -37,7 +37,7 @@ void SimulatorRadioPath::radioDataReceive(const uint8_t *pData, const size_t len
 
 void SimulatorRadioPath::radioTxOn()
 {
-
+    m_pOwner->getParams().mode() = T_RADIO_MODE::RADIO_MODE_TX;
 }
 
 void SimulatorRadioPath::radioTxOff()
@@ -47,7 +47,7 @@ void SimulatorRadioPath::radioTxOff()
 
 void SimulatorRadioPath::radioRxOn()
 {
-
+    m_pOwner->getParams().mode() = T_RADIO_MODE::RADIO_MODE_RX;
 }
 
 void SimulatorRadioPath::radioRxOff()
@@ -57,12 +57,12 @@ void SimulatorRadioPath::radioRxOff()
 
 void SimulatorRadioPath::radioSetTxFreqBy(const uint32_t freqIndex)
 {
-    Q_UNUSED(freqIndex);
+    m_pOwner->getParams().txFreqIndex() = freqIndex;
 }
 
 void SimulatorRadioPath::radioSetRxFreqBy(const uint32_t freqIndex)
 {
-    Q_UNUSED(freqIndex);
+    m_pOwner->getParams().rxFreqIndex() = freqIndex;;
 }
 
 void SimulatorRadioPath::radioFreqListCalibration(const uint32_t *pFreqIndexList, const size_t size)

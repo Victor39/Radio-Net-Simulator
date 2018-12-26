@@ -12,7 +12,7 @@ void mGraphicScene::mousePressEvent(QGraphicsSceneMouseEvent * mouseEvent)
 {
     QPointF screenPos = mouseEvent->scenePos();
 
-    if(mouseEvent->button() == Qt::LeftButton) {
+    if((mouseEvent->button() == Qt::LeftButton) || (mouseEvent->button() == Qt::RightButton)) {
         QGraphicsItem * item = itemAt(screenPos, QTransform());
         if(item) {
             emit sigMouseClick(static_cast<RadioItem *>(item)->getParams());

@@ -51,6 +51,16 @@ RadioId RadioItemLinker::getId() const
 void RadioItemLinker::launchReceivingMessage(QSharedPointer<Message> msg)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
+
+    if (radioItem()->getParams().mode() == T_RADIO_MODE::RADIO_MODE_OFF) {
+        qWarning() << "Warning: Radio Item '" <<getId() << "' can't recive message. Radio Item is OFF";
+        return;
+    }
+    else if (radioItem()->getParams().mode() == T_RADIO_MODE::RADIO_MODE_TX) {
+        qWarning() << "Warning: Radio Item '" <<getId() << "' can't recive message. Radio Item is in TRANSMITE mode";
+        return;
+    }
+
     if(m_radioItem->getParams().rxFreqIndex() == msg->freqIndex()) {
 
         if (m_receivingMessages.find(msg->freqIndex()) == m_receivingMessages.end()) {
@@ -79,6 +89,16 @@ void RadioItemLinker::launchReceivingMessage(QSharedPointer<Message> msg)
 void RadioItemLinker::launchDistributionMessage (QSharedPointer<Message> msg)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
+
+    if (radioItem()->getParams().mode() == T_RADIO_MODE::RADIO_MODE_OFF) {
+        qWarning() << "Warning: Radio Item '" <<getId() << "' can't send message. Radio Item is OFF";
+        return;
+    }
+    else if (radioItem()->getParams().mode() == T_RADIO_MODE::RADIO_MODE_TX) {
+        qWarning() << "Warning: Radio Item '" <<getId() << "' can't send message. Another message is already being sent";
+        return;
+    }
+
     qInfo() << "Sending message from Radio Item '" << msg->sourceId() <<"'";
 
     if((msg->durationTimeMs() - msg->startSendTime().msecsTo(QTime::currentTime())) <= 0) {
@@ -96,6 +116,16 @@ void RadioItemLinker::launchDistributionMessage (QSharedPointer<Message> msg)
 void RadioItemLinker::finishReceivingMessage(QSharedPointer<Message> msg)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
+
+    if (radioItem()->getParams().mode() == T_RADIO_MODE::RADIO_MODE_OFF) {
+        qWarning() << "Warning: Radio Item '" <<getId() << "' can't finish recive message. Radio Item is OFF";
+        return;
+    }
+    else if (radioItem()->getParams().mode() == T_RADIO_MODE::RADIO_MODE_TX) {
+        qWarning() << "Warning: Radio Item '" <<getId() << "' can't finish recive message. Radio Item is in TRANSMITE mode";
+        return;
+    }
+
     if(m_radioItem->getParams().rxFreqIndex() == msg->freqIndex()) {
         qInfo() << "Radio Item '" << m_radioItem->getParams().id() <<
                     "' SUCCESSFULLY received message from Radio Item '" << msg->sourceId() <<"'";

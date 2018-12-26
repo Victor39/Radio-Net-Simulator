@@ -19,8 +19,8 @@ public:
     void updateTopology();
     void updateTopologyFor(const RadioId & radioItemId);
     RadioId getId() const;
-    void launchReceivingMessage (QSharedPointer<Message> msg);
     void launchDistributionMessage (QSharedPointer<Message> msg);
+    void launchReceivingMessage (QSharedPointer<Message> msg);
     void finishReceivingMessage(QSharedPointer<Message> msg);
     const RadioItem *radioItem() const;
     void getAvailableNeighbors(std::list<const RadioItem *> & neighbors) const;
