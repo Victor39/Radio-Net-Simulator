@@ -21,7 +21,7 @@ public:
     RadioId getId() const;
     void launchDistributionMessage (QSharedPointer<Message> msg);
     void launchReceivingMessage (QSharedPointer<Message> msg);
-    void finishReceivingMessage(QSharedPointer<Message> msg);
+    void finishReceivingMessage(uint32_t freq);
     const RadioItem *radioItem() const;
     void getAvailableNeighbors(std::list<const RadioItem *> & neighbors) const;
 
@@ -30,7 +30,7 @@ private:
 
     RadioItem * m_radioItem;
     std::unordered_map<RadioId, std::pair<std::shared_ptr<RadioItemLinker>, uint32_t>> m_neighbors;
-    std::unordered_map<uint32_t, QSharedPointer<Message>> m_receivingMessages;
+    std::unordered_map<uint32_t, std::pair<QSharedPointer<Message>, QSharedPointer<QTimer>>> m_receivingMessages;
 };
 
 #endif // RADIOITEMLINKER_H

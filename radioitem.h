@@ -57,7 +57,7 @@ private:
     uint32_t m_callNumber               {0};
     uint32_t m_txFreqIndex              {0};
     uint32_t m_rxFreqIndex              {0};
-    uint32_t m_dataTransmissionRate     {1200};
+    uint32_t m_dataTransmissionRate     {100};
 };
 
 

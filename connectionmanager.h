@@ -8,6 +8,8 @@
 #include "message.h"
 #include <QSharedPointer>
 #include <unordered_map>
+#include <thread>
+#include <mutex>
 
 
 class ConnectionManager : public QObject
@@ -27,10 +29,11 @@ public:
     void getAvailableNeighborsFor (const RadioId & radioItemId, std::list<const RadioItem *> & neighbors) const;
 
 private:
-    ConnectionManager();
+    mutable std::mutex m_mutex;
 
     std::unordered_map<RadioId, std::shared_ptr<RadioItemLinker>> m_radioItemLinkers;
 
+    ConnectionManager();
 signals:
 
 public slots:

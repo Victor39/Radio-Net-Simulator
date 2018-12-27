@@ -32,7 +32,7 @@ RadioItem::RadioItem(int32_t x, int32_t y, RadioId id, QGraphicsObject *parent) 
 
 RadioItem::~RadioItem()
 {
-    qDebug() << "Removed RadioItem '" << m_params.id() << "'";
+    qDebug() << "Debug: removed Radio Item '" << m_params.id() << "'";
 }
 
 

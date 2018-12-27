@@ -1,5 +1,4 @@
 #include <QDebug>
-#include <QEventLoop>
 #include <QTimer>
 #include "radioitemlinker.h"
 
@@ -64,11 +63,14 @@ void RadioItemLinker::launchReceivingMessage(QSharedPointer<Message> msg)
     if(m_radioItem->getParams().rxFreqIndex() == msg->freqIndex()) {
 
         if (m_receivingMessages.find(msg->freqIndex()) == m_receivingMessages.end()) {
-            m_receivingMessages.emplace(msg->freqIndex(), msg);
+            QSharedPointer<QTimer> tim = QSharedPointer<QTimer>(new QTimer());
+            m_receivingMessages.emplace(msg->freqIndex(), std::make_pair(msg, tim));
+            uint32_t rxFreq = msg->freqIndex();
+            QObject::connect(m_receivingMessages.at(msg->freqIndex()).second.get(), &QTimer::timeout, this,  [rxFreq, this] (){ this->finishReceivingMessage(rxFreq); });
             int32_t pastTimeMs = msg->startSendTime().msecsTo(QTime::currentTime());
             int32_t remainReceptionTimeMs = msg->durationTimeMs() - (pastTimeMs);
             if(remainReceptionTimeMs > 0) {
-                QTimer::singleShot(remainReceptionTimeMs, this, [this, msg] () { this->finishReceivingMessage(msg); });
+                m_receivingMessages.at(msg->freqIndex()).second->start(remainReceptionTimeMs);
             }
             else {
                 m_receivingMessages.erase(msg->freqIndex());
@@ -99,7 +101,7 @@ void RadioItemLinker::launchDistributionMessage (QSharedPointer<Message> msg)
         return;
     }
 
-    qInfo() << "Sending message from Radio Item '" << msg->sourceId() <<"'";
+    qInfo() << "Info: sending message from Radio Item '" << msg->sourceId() <<"'";
 
     if((msg->durationTimeMs() - msg->startSendTime().msecsTo(QTime::currentTime())) <= 0) {
         qWarning() << "Warning: message from Radio Item '" << msg->sourceId() <<"' from the past. Throwing away message!";
@@ -113,29 +115,44 @@ void RadioItemLinker::launchDistributionMessage (QSharedPointer<Message> msg)
     }
 }
 
-void RadioItemLinker::finishReceivingMessage(QSharedPointer<Message> msg)
+void RadioItemLinker::finishReceivingMessage(uint32_t freq)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
 
     if (radioItem()->getParams().mode() == T_RADIO_MODE::RADIO_MODE_OFF) {
         qWarning() << "Warning: Radio Item '" <<getId() << "' can't finish recive message. Radio Item is OFF";
+        m_receivingMessages.erase(freq);
         return;
     }
     else if (radioItem()->getParams().mode() == T_RADIO_MODE::RADIO_MODE_TX) {
         qWarning() << "Warning: Radio Item '" <<getId() << "' can't finish recive message. Radio Item is in TRANSMITE mode";
+        m_receivingMessages.erase(freq);
         return;
     }
 
-    if(m_radioItem->getParams().rxFreqIndex() == msg->freqIndex()) {
-        qInfo() << "Radio Item '" << m_radioItem->getParams().id() <<
-                    "' SUCCESSFULLY received message from Radio Item '" << msg->sourceId() <<"'";
+    try {
+
+        if(m_neighbors.at(m_receivingMessages.at(freq).first->sourceId()).second > (RadioItem::RADIO_DISTANCE/2)) {
+            qWarning() << "Warning: Radio Item '" << getId() << "' can't finish recive message. Radio Item is OUT of reach";
+            m_receivingMessages.erase(freq);
+            return;
+        }
+    }
+    catch (const std::exception& e) {
+        qCritical() << "Error: Radio Item '" << getId() << "' can't finish recive message. Problem with source Radio Item!";
+        m_receivingMessages.erase(freq);
+        return;
+    }
+    if(m_radioItem->getParams().rxFreqIndex() == freq) {
+        qInfo() << "Info: Radio Item '" << m_radioItem->getParams().id() <<
+                   "' SUCCESSFULLY received message from Radio Item '" <<  m_receivingMessages.at(freq).first->sourceId() <<"'";
     }
     else {
         qWarning() << "Warning: Radio Item '" << m_radioItem->getParams().id() <<"' did not wait for end of the packet reception and switched to another frequency";
     }
 
     try {
-        m_receivingMessages.erase(msg->freqIndex());
+        m_receivingMessages.erase(freq);
     } catch (const std::exception& e) {
         qCritical() << "Error: " << e.what();
     }

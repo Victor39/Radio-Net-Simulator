@@ -19,6 +19,8 @@ ConnectionManager::~ConnectionManager()
 
 void ConnectionManager::addRadioItem(RadioItem * radioItem)
 {
+    std::lock_guard<std::mutex> lock(m_mutex);
+
     std::shared_ptr<RadioItemLinker> newItemLinker = std::shared_ptr<RadioItemLinker>(new RadioItemLinker(radioItem));
 
     for(auto & existedItemLinker : m_radioItemLinkers) {
@@ -34,6 +36,7 @@ void ConnectionManager::addRadioItem(RadioItem * radioItem)
 
 bool ConnectionManager::removeRadioItemBy(const RadioId & radioItemId)
 {
+    std::lock_guard<std::mutex> lock(m_mutex);
     // Находим итератор на удаляемый инстанс
     auto foundIter = std::find_if(m_radioItemLinkers.begin(), m_radioItemLinkers.end(),
                                   [&radioItemId](std::pair<uint32_t, std::shared_ptr<RadioItemLinker>> const & m) {
@@ -57,6 +60,8 @@ bool ConnectionManager::removeRadioItemBy(const RadioId & radioItemId)
 
 const RadioItem *ConnectionManager::findRadioItemBy(const RadioId &radioItemId) const
 {
+    std::lock_guard<std::mutex> lock(m_mutex);
+
     // Находим итератор на искомый инстанс
     auto foundIter = std::find_if(m_radioItemLinkers.begin(), m_radioItemLinkers.end(),
                                   [&radioItemId](std::pair<uint32_t, std::shared_ptr<RadioItemLinker>> const & m) {
@@ -71,6 +76,7 @@ const RadioItem *ConnectionManager::findRadioItemBy(const RadioId &radioItemId) 
 
 void ConnectionManager::updateTopologyFor(const RadioId & radioItemId)
 {
+    std::lock_guard<std::mutex> lock(m_mutex);
     for (auto & item : m_radioItemLinkers) {
         if(item.first == radioItemId ) {
             item.second->updateTopology();
@@ -83,6 +89,7 @@ void ConnectionManager::updateTopologyFor(const RadioId & radioItemId)
 
 void ConnectionManager::getAvailableNeighborsFor(const RadioId &radioItemId, std::list<const RadioItem *> & neighbors) const
 {
+    std::lock_guard<std::mutex> lock(m_mutex);
     try {
         auto radioLinker =  m_radioItemLinkers.at(radioItemId);
         radioLinker->getAvailableNeighbors(neighbors);
@@ -94,6 +101,7 @@ void ConnectionManager::getAvailableNeighborsFor(const RadioId &radioItemId, std
 // -------------------------------------------------- Слоты -----------------------------------------------------
 void ConnectionManager::slotSendMessage(QSharedPointer<Message> msg) {
 
+    std::lock_guard<std::mutex> lock(m_mutex);
     try {
         auto sourceLinker =  m_radioItemLinkers.at(msg->sourceId());
         sourceLinker->launchDistributionMessage (msg);
